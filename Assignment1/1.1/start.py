@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.cm as cm
-# import line
 import matplotlib.pyplot as plt
 
 # dt =0.001 seconds
@@ -12,10 +11,9 @@ l = 1
 x = np.linspace(0, l, n+1)
 
 def starting_positions_t_0(x,t):
-    return np.sin(2*np.pi*x)
+    return np.where((1/5 < x) & (x < 2/5), np.sin(5 * np.pi * x), 0)
 
 def next_time_step(u_before, u_now, c, dt, dx):
-    print(u_before[0:10])
     u_next = np.zeros(len(u_before))
     u_next[0] = u_before[0]
     u_next[-1] = u_before[-1]
