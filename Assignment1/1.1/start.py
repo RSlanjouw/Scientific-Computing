@@ -52,7 +52,7 @@ def update(frame):
     return line,
 
 # Create the animation
-ani = animation.FuncAnimation(fig, update, frames=500, interval=dt * 1000, blit=True)
+ani = animation.FuncAnimation(fig, update, frames=1000, interval=dt * 1000, blit=True)
 # make the y-axis range bigger
 
 plt.show()
