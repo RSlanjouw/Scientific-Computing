@@ -24,9 +24,14 @@ def next_time_step(matrix, step_t, step_x, d):
     # at the borders we are using the periodic boundary condition
     matrix_next[1:-1, 1:-1] = matrix[1:-1, 1:-1] + constant * (matrix[2:, 1:-1] + matrix[:-2, 1:-1] + matrix[1:-1, 2:] + matrix[1:-1, :-2] - 4 * matrix[1:-1, 1:-1])
     # at the borders we are using th esame formula but with the periodic boundary condition so c+ constant * (c[i+1] + c[i-1] + c[j+1] + c[j-1] - 4c[i,j])
-    matrix_next[1:-1, 0] = matrix[1:-1, 0] + constant * (matrix[2:, 0] + matrix[:-2, 0] + matrix[1:-1, 1] + matrix[1:-1, -1] - 4 * matrix[1:-1, 0])
+    matrix_next[1:-1, 0] = matrix[1:-1, 0] + constant * (matrix[2:, 0] + matrix[:-2, 0] + matrix[1:-1, 1] + matrix[1:-1, -2] - 4 * matrix[1:-1, 0])
     matrix_next[1:-1, -1] = matrix_next[1:-1, 0]
     return matrix_next
+
+
+def gauss_seidel(matrix, step_t, step_x, d):
+    pass
+    
 
 # plot the matrix next with update function in animate
 def update(frame):
@@ -39,9 +44,9 @@ from matplotlib.animation import FuncAnimation
 
 
 print(4 * step_t / (step_x**2))
+fig, ax = plt.subplots()
 #initialize the matrix
 matrix = initialize_matrix(10)
-fig = plt.figure()
 ani = FuncAnimation(fig, update, frames=1000, interval=1, blit=False)
 
 plt.show()
