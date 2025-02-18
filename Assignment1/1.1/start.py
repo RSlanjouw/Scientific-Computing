@@ -1,7 +1,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 
 # dt =0.001 seconds
