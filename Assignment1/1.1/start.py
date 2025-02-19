@@ -1,11 +1,10 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 
 # dt =0.001 seconds
-t = np.linspace(0, 1, 1000)
+t = np.linspace(0, 1, 1001)
 n = 1000
 l = 1 
 x = np.linspace(0, l, n+1)
@@ -20,7 +19,7 @@ def next_time_step(u_before, u_now, c, dt, dx):
     if np.array_equal(u_before, u_now):
         for i in range(1, len(u_before)-1):
             second_part = (c*(dt/dx)) ** 2
-            third_part = u_now[i+1] - 2*u_now[i] + u_now[i-1]
+            third_part = u_now[i+1] - 2 * u_now[i] + u_now[i-1]
             u_next[i] = u_now[i] + second_part * third_part
     else:
         for i in range(1,len(u_before)-1):
@@ -52,7 +51,7 @@ def update(frame):
     return line,
 
 # Create the animation
-ani = animation.FuncAnimation(fig, update, frames=1000, interval=dt * 1000, blit=True)
+ani = animation.FuncAnimation(fig, update, frames=1000, interval=dt*1000, blit=True)
 # make the y-axis range bigger
 
 plt.show()
