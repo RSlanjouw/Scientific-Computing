@@ -29,7 +29,7 @@ if show_analytic == True:
     y_analytic = []
     for idx, _ in enumerate(frames_to_save):
         y_analytic.append(ea.analytical_solution(x, dt_[idx], 1))
-        plt.plot(x, y_analytic[idx], label=fr"Analytical $\delta t =${dt_[idx]}", linestyle='-', marker='^', markersize=3)
+        plt.plot(x, y_analytic[idx], label=fr"Analytical $\delta t =${dt_[idx]}", linestyle='--', marker='^', markersize=3)
 
 #plot the resulting data
 
