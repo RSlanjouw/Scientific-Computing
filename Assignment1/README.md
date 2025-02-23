@@ -16,7 +16,7 @@ K - ./1.2-1.6/sink_calculate.py - ./1.2-1.6/sink_visualize.py
 Bonus - SEE K
 
 ### Folder and file structure
-The files are seprated in three folders whereby the 1.1 and 1.2-1.6 contain the seprate python files and the other folders notebooks for mostly experimentating and some results. Each plot file first does a test or the data is saved in the ./data folder and if not runs the code to generate the data. 
+The files are seprated in four folders whereby the 1.1 and 1.2-1.6 contain seprate python files and the other folders notebooks mostly forr  experimentating and some of the results. Each plot file first does a test or the data is saved in the ./data folder and if not runs the code to generate the data. 
 
 
 ### Comments
