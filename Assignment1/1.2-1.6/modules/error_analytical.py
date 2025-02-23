@@ -4,9 +4,17 @@
 import numpy as np
 from scipy.special import erfc
 
-def analytical_solution(x, t, D):
+def analytical_solution(x, t, D, dt=0.0001):
     """X = positions, t = time, D = diffusion coefficient"""
-    sum_term = np.zeros_like(x)
-    for i in range(10):  # Amount of iterations, in formula it is infinite but fuck that 1mil is enough, felt like it.
-        sum_term += erfc((1 - x + 2 * i) / np.sqrt(2 * D * t)) - erfc((1 + x + 2 * i) / np.sqrt(2 * D * t))
-    return sum_term
+    y = np.zeros_like(x)
+    t = t * dt
+    for i in range(10):
+        y += erfc((1 - x + 2 * i) / (2 * np.sqrt(D * t))) - erfc((1 + x + 2 * i) / (2 * np.sqrt(D * t)))
+    return y
+
+
+def compare_a_e(x,y):
+    """Compares the analytical solution to the numerical solution"""
+    error = np.abs(y - x)
+    error = np.sum(error)
+    return error
