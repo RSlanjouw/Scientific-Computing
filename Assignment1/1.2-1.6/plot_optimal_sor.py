@@ -21,7 +21,7 @@ def generate():
         def f(omega):
             return SOR_Eq_TOL(matrix, tol, omega)
         
-        result = minimize_scalar(f, bounds=(lb, 2), method='bounded', options={'xatol': 1e-3})
+        result = minimize_scalar(f, bounds=(1, 2), method='bounded', options={'xatol': 1e-3})
         omega = result.x
         print(omega)
         lb = omega
