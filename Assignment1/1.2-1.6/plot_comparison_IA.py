@@ -83,7 +83,7 @@ for i in range(4):
     axs[i].set_ylim(0, 1)
     axs[i].grid()
 plt.tight_layout()
-plt.savefig("plots/compare_j_g_s_analytic.png")
+# plt.savefig("plots/compare_j_g_s_analytic.png")
 plt.show()
 
 

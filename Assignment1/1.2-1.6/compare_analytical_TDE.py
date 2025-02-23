@@ -64,10 +64,10 @@ plt.legend()
 
 plt.show()
 # get max error in np array
-error = np.array(error[1:])
-print(error)
-# get max error
-print(max(error))
-# get index
-print(477 * 0.0001)
+# error = np.array(error[1:])
+# print(error)
+# # get max error
+# print(max(error))
+# # get index
+# print(477 * 0.0001)
 # print(error[])
