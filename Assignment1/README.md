@@ -1,4 +1,4 @@
-## Assingment 1
+## Assignment 1
 In this repo the files are found for the first Assingment for Scientific Computing. Running the files can just be done as normal. 
 
 The answers of the questions can be found in:
