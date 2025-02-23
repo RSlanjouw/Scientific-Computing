@@ -1,5 +1,8 @@
+# NAME: compare_analytical_TDE.py
+# This file compares the analytical solution to the numerical solution of the TTD equation
+
 import numpy as np
-from modules.functions import TTD_Eq
+from modules.functions import TDDE_Eq
 from modules.error_analytical import compare_a_e, analytical_solution
 import matplotlib.pyplot as plt
 
@@ -14,12 +17,10 @@ def generate():
     error = []
     dx = 1/50
     dt = (dx**2)/4
-    print(dt)
-    # make int
 
 
     for i in range(int(1/dt)):
-        matrix = TTD_Eq(matrix, dt, dx, 1)
+        matrix = TDDE_Eq(matrix, dt, dx, 1)
         if i in time_to_save:
             x = np.linspace(0, 1, 50)
             an = analytical_solution(x, i,1)

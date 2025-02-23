@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from modules.functions import TTD_Eq, TIDE_Eq, Gauss_Eq
+from modules.functions import TDDE_Eq, TIDE_Eq, Gauss_Eq
 
 n = 50
 dx = 1/n

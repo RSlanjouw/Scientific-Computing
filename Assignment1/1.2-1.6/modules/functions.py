@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def TTD_Eq(matrix, dt, dx, D):
+def TDDE_Eq(matrix, dt, dx, D):
     cons = dt*D/(dx**2)
     if cons > 1:
         return r"Unstable"

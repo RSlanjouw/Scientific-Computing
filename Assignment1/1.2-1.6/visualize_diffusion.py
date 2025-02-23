@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from modules.functions import TTD_Eq, TIDE_Eq, Gauss_Eq
+from modules.functions import TDDE_Eq, TIDE_Eq, Gauss_Eq
 
 y_top= 1
 y_bottom = 0
@@ -23,7 +23,7 @@ mask = np.ones((50,50))
 
 def update(frame):
     global matrix
-    matrix = TTD_Eq(matrix, step_t, step_x, 1)
+    matrix = TDDE_Eq(matrix, step_t, step_x, 1)
     im.set_array(matrix)
     return [im]
 

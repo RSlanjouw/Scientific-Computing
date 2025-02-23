@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from modules.error_analytical import analytical_solution
-from modules.functions import TTD_Eq
+from modules.functions import TDDE_Eq
 
 
 show_analytic = True
@@ -26,7 +26,7 @@ def generate():
 
     #run the diffusion while saving our four cases 
     for i in range(10001):
-        domain = TTD_Eq(domain, dt, dx, 1)
+        domain = TDDE_Eq(domain, dt, dx, 1)
         if i in frames_to_save:
             y.append(domain[::-1, 0])
             dt_.append(dt * i)
