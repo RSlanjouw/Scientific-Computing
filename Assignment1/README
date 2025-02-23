@@ -17,3 +17,7 @@ Bonus - SEE K
 
 ### Folder and file structure
 The files are seprated in three folders whereby the 1.1 and 1.2-1.6 contain the seprate python files and the other folders notebooks for mostly experimentating and some results. Each plot file first does a test or the data is saved in the ./data folder and if not runs the code to generate the data. 
+
+
+### Comments
+Because the files are seperated there are not a lot of comments about specific things because it should be easy readable already. To much comments are also a bad pratice. 
