@@ -18,8 +18,7 @@ def initialize_matrix(n):
     matrix[0] = 1
     return matrix
 
-mask = np.ones((50,50))
-# mask[4][4] = 0
+
 
 def update(frame):
     global matrix
@@ -35,15 +34,11 @@ matrix = initialize_matrix(50)
 fig, ax = plt.subplots()
 im = ax.imshow(matrix, cmap="hot", interpolation="nearest")
 
-# Attach event to handle window closing
+# BE ABLE TO CLOSE
 fig.canvas.mpl_connect("close_event", on_close)
 
 ani = FuncAnimation(fig, update, frames=1000, interval=0.1, blit=False)
 
-# add colorbar
-# plt.colorbar(im)
-# plt.title('Diffusion in a 50x50 matrix')
-# make x and y axis relative from 0 to 1 just write down 0 and 1
 plt.yticks([0, 25], [0, 0.5])
 plt.xticks([0, 50], [0, 1])
-plt.show()  # Show the plot without immediately exiting
+plt.show() 

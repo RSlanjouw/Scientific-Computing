@@ -33,12 +33,12 @@ def calculate_min_omega(matrix, tol,mask):
     result = minimize_scalar(f, bounds=(1, 2), method='bounded', options={'xatol': 1e-3})
     return result.x
 
-
-print("\textbf{Jacobi} & \textbf{Gauss-Seidel} & \textbf{SOR $\omega$ = 1.8} & \textbf{Optimal $\omega$} \\")
+# THIS MAKES A LATEX TABLE NICE TO JUST COPY IN TO THE REPORT YOU KNOW
+print("\textbf{Jacobi} & \textbf{Gauss-Seidel} & \textbf{SOR $\omega$ = 1.8} & \textbf{Optimal $\omega$} \\\\")
 for mask in [mask_base, mask_1, mask_2, mask_3, mask_i1, mask_i2, mask_i3]:
     jacobi = Jacob_Eq_TOL(grid, 10**-7, mask=mask)
     gauss = Gauss_Eq_TOL(grid, 10**-7, mask=mask)
     sor = SOR_Eq_TOL(grid, 10**-7, 1.8, mask=mask)
     optimal_omega = calculate_min_omega(grid, 10**-7, mask)
     Sor_optimal = SOR_Eq_TOL(grid, 10**-7, optimal_omega, mask=mask)
-    print(f"Sinkhole . & {jacobi} & {gauss} & {sor} & {optimal_omega}& {Sor_optimal} \\ \hline")
+    print(f"Sinkhole . & {jacobi} & {gauss} & {sor} & {optimal_omega}& {Sor_optimal} \\\\ \hline")
