@@ -1,8 +1,17 @@
 import numpy as np
 from numba import njit
 
-@njit
-def update_contour(candidate_loc, contour, domain):
+def analytical_start(domain):
+    domain[0, :] = 1
+    domain[-1, :] = 0
+    # is an equal line over the whole grid
+    x = np.linspace(1, 0, len(domain))
+    for i in range(0, len(domain)):
+        domain[:, i] = x
+    return domain
+
+
+def update_contour(candidate_loc, contour, domain, candidates):
     """
     Update the contour and domain matrices after a candidate location is chosen to aggregate.
 
@@ -10,6 +19,7 @@ def update_contour(candidate_loc, contour, domain):
     candidate_loc (tuple): Coordinates of the chosen candidate.
     contour (ndarray): Matrix tracking the cluster (1s) and neighboring candidates (2s).
     domain (ndarray): Matrix where the diffusion equation is solved.
+    candidates (list): List of candidate coordinates.
 
     Returns:
     tuple: Updated contour matrix and list of new candidate locations.
@@ -19,14 +29,20 @@ def update_contour(candidate_loc, contour, domain):
     domain[x, y] = 0
     contour[x, y] = 1
 
-    neighbors = [(x-1, y), (x, y-1), (x+1, y), (x, y+1)]
-    candidates = []
+    neighbors = []
+    if x > 0:
+        neighbors.append([x-1, y])
+    if y > 0:
+        neighbors.append([x, y-1])
+    if x < n-1:
+        neighbors.append([x+1, y])
+    if y < n-1:
+        neighbors.append([x, y+1])
 
-    for nx, ny in neighbors:
-        if 0 < nx < n-1 and 0 < ny < n-1 and contour[nx, ny] != 1:
-            contour[nx, ny] = 2
-            candidates.append((nx, ny))
-
+    for i, j in neighbors:
+        if contour[i, j] == 0:
+            contour[i, j] = 2
+            candidates.append((i, j))
     return contour, candidates
 
 def aggregate_candidate(candidates, domain, eta):
@@ -43,37 +59,22 @@ def aggregate_candidate(candidates, domain, eta):
     """
     a = np.array([(np.abs(domain[i, j]))**eta for i, j in candidates])
     prob_cand = a / np.sum(a)
+    # print(prob_cand)
     return candidates[np.random.choice(len(candidates), p=prob_cand)]
 
 @njit
-def sor_iteration(matrix, contour, w):
-    """
-    Perform one iteration of the Successive Over-Relaxation (SOR) method.
+def SOR_Eq(matrix, omega, mask):
+    new_matrix = matrix.copy()
 
-    Parameters:
-    matrix (ndarray): Current state of the domain matrix.
-    contour (ndarray): Matrix tracking the cluster (1s).
-    w (float): Relaxation factor.
-
-    Returns:
-    ndarray: Updated domain matrix after one SOR iteration.
-    """
-    n = len(matrix)
-    next_matrix = np.copy(matrix)
-
-    for j in range(1, n-1):
-        for i in range(n):
-            if contour[j, i] == 1:
-                next_matrix[j, i] = 0
-            else:
-                if i == 0:
-                    next_matrix[j, i] = w/4 * (matrix[j, 1] + matrix[j, -2] + matrix[j+1, i] + next_matrix[j-1, i]) + (1 - w) * matrix[j, i]
-                elif i == n-1:
-                    next_matrix[j, i] = w/4 * (matrix[j, 1] + matrix[j, -2] + matrix[j+1, i] + next_matrix[j-1, i]) + (1 - w) * matrix[j, i]
-                else:
-                    next_matrix[j, i] = w/4 * (matrix[j, i+1] + next_matrix[j, i-1] + matrix[j+1, i] + next_matrix[j-1, i]) + (1 - w) * matrix[j, i]
-
-    return next_matrix
+    for i in range(1, len(matrix)-1):
+        for j in range(1, len(matrix)-1):
+            if mask[i, j] == 0 or mask[i, j] == 2:
+                new_matrix[i,j] = (1-omega) * matrix[i,j] + omega * (new_matrix[i+1,j] + new_matrix[i-1,j] + new_matrix[i,j+1] + new_matrix[i,j-1])/4
+        if mask[i, 0] == 0 or mask[i, 0] == 2:
+            new_matrix[i,0] = (1-omega) * matrix[i,0] + omega * (new_matrix[i-1,0] + new_matrix[i+1,0] + new_matrix[i,1] + new_matrix[i,-2]) / 4
+        if mask[i, -1] == 0 or mask[i, -1] == 2:
+            new_matrix[i,-1] = new_matrix[i,0]
+    return new_matrix
 
 @njit
 def sor(domain, contour, w, eps=1e-5):
@@ -93,14 +94,14 @@ def sor(domain, contour, w, eps=1e-5):
     iter_count = 0
 
     while conv > eps:
-        next_domain = sor_iteration(domain, contour, w)
+        next_domain = SOR_Eq(domain, w, contour)
         conv = np.max(np.abs(next_domain - domain))
         domain = next_domain
         iter_count += 1
 
     return domain, iter_count
 
-def next_step(domain, contour, candidates, eta, w, optimal_omega=False):
+def next_step(domain, contour, candidates, eta, w):
     """
     Perform the next step in the DLA model.
 
@@ -115,14 +116,52 @@ def next_step(domain, contour, candidates, eta, w, optimal_omega=False):
     tuple: Updated domain, contour, and candidates.
     """
     cand = aggregate_candidate(candidates, domain, eta)
-    contour, candidates = update_contour(cand, contour, domain)
-    if optimal_omega:
-        import scipy.optimize as opt
-        def sor_opt(matrix, contour, omega, tol=1e-5):
-            return sor(matrix, contour, omega, eps=tol)[1]
-        result = opt.minimize_scalar(sor_opt, args=(contour, w))
-        domain, iter = sor(domain, contour, result.x)
-        return domain, contour, candidates, iter, result.x
-    domain, iter = sor(domain, contour, w)
+    # candidates.remove(cand)
+    contour, candidates = update_contour(cand, contour, domain, candidates=candidates)
+    domain, iter = sor(domain, contour,w)
     return domain, contour, candidates, iter
+
+def test_run_iterations(omega, eta):
+    n = 100 
+    eta = eta 
+    N = 100 
+    domain = np.zeros((n, n))
+    domain[0, :] = 1
+    domain[-1, :] = 0
+    contour = np.zeros((n, n))
+    domain = analytical_start(domain)
+    contour, candidates = update_contour([n-1, n//2], contour, domain, [])
+    domain, iter = sor(domain, contour, omega)
+    # print(iter)
+    iterations = iter
+    for k in range(N):
+        domain, contour, candidates,iter= next_step(domain, contour, candidates, eta, omega)
+        iterations += iter
+    return iterations
+
+def run(omega, eta):
+    n = 100 # grid length (once squared)
+    eta = eta # shape parameter
+    N = 250
+    domain = np.zeros((n, n))
+    domain[0, :] = 1
+    domain[-1, :] = 0
+    contour = np.zeros((n, n))
+    contour, candidates = update_contour([n-2, n//2], contour, domain, candidates=[])
+    domain, iter = sor(domain, contour, omega)
+    # print(iter)
+    for k in range(N):
+        domain, contour, candidates,_= next_step(domain, contour, candidates, eta, omega)
+    return domain, contour
+
+
+# # start test sor vs analytical
+domain1 = analytical_start(np.zeros((100, 100)))
+domain2 = np.zeros((100, 100))
+domain2[0, :] = 1
+domain2[-1, :] = 0
+domain2, _ = sor(domain2, np.zeros((100, 100)), 1.9)
+# test or the analytical solution is the same as the sor solution
+assert np.allclose(domain1, domain2, atol=1e-2)
+
 
