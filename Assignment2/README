@@ -1,1 +1,14 @@
-# For all the seperate exercises a seperate folder is made to gain the plots
+## Assignment 1
+In this repo the files are found for the first Assingment for Scientific Computing. Running the files can just be done as normal. 
+
+The answers of the questions can be found in:
+A - Folder 21 where 21.ipynb presents the code needed to answer question A. The bonus improvement is shown and explained in the 21BONUS.ipynb file.
+B - Folder 22 where 22.ipynb presents the code needed to answer question B. 
+C - Folder 23 where 23.ipynb presents the code needed to answer question C. Also the pictures are saved in the folder. 
+
+### Folder and file structure
+The files are seprated in 3 folders. Each folder contains the ipynb to answer the questions. 
+
+
+### Comments
+Because the files are seperated there are not a lot of comments about specific things because it should be easy readable already. To much comments are also a bad pratice. Note that most of the functions are written in the ipynb but for 21 the funcitons are in the modules folder.
