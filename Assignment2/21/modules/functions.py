@@ -12,18 +12,6 @@ def analytical_start(domain):
 
 
 def update_contour(candidate_loc, contour, domain, candidates):
-    """
-    Update the contour and domain matrices after a candidate location is chosen to aggregate.
-
-    Parameters:
-    candidate_loc (tuple): Coordinates of the chosen candidate.
-    contour (ndarray): Matrix tracking the cluster (1s) and neighboring candidates (2s).
-    domain (ndarray): Matrix where the diffusion equation is solved.
-    candidates (list): List of candidate coordinates.
-
-    Returns:
-    tuple: Updated contour matrix and list of new candidate locations.
-    """
     n = len(contour)
     x, y = candidate_loc
     domain[x, y] = 0
@@ -46,17 +34,6 @@ def update_contour(candidate_loc, contour, domain, candidates):
     return contour, candidates
 
 def aggregate_candidate(candidates, domain, eta):
-    """
-    Choose a candidate to aggregate based on their probabilities.
-
-    Parameters:
-    candidates (list): List of candidate coordinates.
-    domain (ndarray): Matrix where the diffusion equation is solved.
-    eta (float): Exponent for probability calculation.
-
-    Returns:
-    tuple: Coordinates of the chosen candidate.
-    """
     a = np.array([(np.abs(domain[i, j]))**eta for i, j in candidates])
     prob_cand = a / np.sum(a)
     # print(prob_cand)
@@ -78,18 +55,6 @@ def SOR_Eq(matrix, omega, mask):
 
 @njit
 def sor(domain, contour, w, eps=1e-5):
-    """
-    Run the SOR method until convergence.
-
-    Parameters:
-    domain (ndarray): Initial state of the domain matrix.
-    contour (ndarray): Matrix tracking the cluster (1s).
-    w (float): Relaxation factor.
-    eps (float): Convergence precision.
-
-    Returns:
-    tuple: Converged domain matrix and number of iterations.
-    """
     conv = 1
     iter_count = 0
 
@@ -102,21 +67,7 @@ def sor(domain, contour, w, eps=1e-5):
     return domain, iter_count
 
 def next_step(domain, contour, candidates, eta, w):
-    """
-    Perform the next step in the DLA model.
-
-    Parameters:
-    domain (ndarray): Current state of the domain matrix.
-    contour (ndarray): Matrix tracking the cluster (1s).
-    candidates (list): List of candidate coordinates.
-    eta (float): Exponent for probability calculation.
-    w (float): Relaxation factor.
-
-    Returns:
-    tuple: Updated domain, contour, and candidates.
-    """
     cand = aggregate_candidate(candidates, domain, eta)
-    # candidates.remove(cand)
     contour, candidates = update_contour(cand, contour, domain, candidates=candidates)
     domain, iter = sor(domain, contour,w)
     return domain, contour, candidates, iter
